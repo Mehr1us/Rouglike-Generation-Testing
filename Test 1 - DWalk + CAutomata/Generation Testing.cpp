@@ -5,9 +5,9 @@
 #include <math.h>
 #include <cfenv>
 
-//change to true to see debug msgs
+//change to true to see debug msgs (v.slow)
 static const bool debug = false;
-static const bool liteDebug = false; // only if debug = false;
+static const bool liteDebug = false; // only if debug = false; (not that fast)
 static const bool showGen = false; 
 /*change showGen to true when debug = false; to see generation each of the 200 steps at a time (slow)
 /	
@@ -20,6 +20,8 @@ static const bool showGen = false;
 /	
 /	
 */
+
+//Checks how many of int value are in the map
 int valFinder(int map[19][49], int value)
 {
 	int a = 19; int b = 49; int x = 0;
@@ -33,6 +35,7 @@ int valFinder(int map[19][49], int value)
 	return x;
 }
 
+//checks if the current x and y coords are on the border 
 bool touchingBorder(int x, int y)
 {
 	if (x == 0 || x == 48)return true;
@@ -40,9 +43,12 @@ bool touchingBorder(int x, int y)
 	return false;
 }
 
+//draws the map
 void render(int map[][49], int a, int b)
 {
+	//'.' represent floors, '#' represent walls and '!' represents the current x, y pos only seen if debug or showGen = true;
 	char symbmap[] = { '.', '#', '!'};
+	
 	for (int i = 0; i < a; i++)
 	{
 		for (int j = 0; j < b; j++)
@@ -53,7 +59,7 @@ void render(int map[][49], int a, int b)
 	}
 }
 
-//count num of neighbours that are floors
+//count num of neighbours that are equal to int tileno
 int nebCount(int map[][49], int i, int j, int tileno)
 {
 	int neb = 0;
@@ -70,6 +76,7 @@ int nebCount(int map[][49], int i, int j, int tileno)
 	return neb;
 }
 
+//checks if the 4 neighbours are all floors // technically no longer needed
 bool noDestination(int map[][49], int i, int j)
 {
 	int neb = 0;
@@ -81,6 +88,7 @@ bool noDestination(int map[][49], int i, int j)
 	return false;
 }
 
+//generates a random value based on the seed, iteration and the number of unsuccessful loops inbetween iterations
 int seedRand(int c, int loop, char seed[40])
 {
 	srand((int)seed[c] * (int)seed[c + 1] * 37 * (loop + 1));
@@ -89,6 +97,7 @@ int seedRand(int c, int loop, char seed[40])
 	return x;
 }
 
+//scrambler my 4 int array based on the "seed"
 void scrambler(int arr[], int l, int c, int loop, char seed[40])
 {
 	srand((int)seed[c] * (int)seed[c + 1] * 3737 * (loop + 1));
@@ -129,11 +138,11 @@ void scrambler(int arr[], int l, int c, int loop, char seed[40])
 	}
 }
 
+//checks if the new j value is part of jImp (has repeated a value)
 bool compJ(int j, int jImp[3])
 {
 	for (int i = 0; i < 3; i++)
 	{
-
 		if (j == jImp[i])return true;
 	}
 	return false;
@@ -145,9 +154,12 @@ int main()
 	char seed[40];
 	char input[40];
 	int randomImp[4] = {0, 1, 2, 3};
+	
 	do {
 		printf("Enter a seed of at least 3 characters (0 for random seed): ");
 		gets_s(input, sizeof(input));
+		
+		//if input is 0, generate a 40 value long seed
 		if (!strcmp(input, "0"))
 		{
 			int jImp[3] = { -1, -1, -1 };
@@ -158,21 +170,23 @@ int main()
 				do {
 					srand((unsigned int)time(NULL) * (1 + k));
 					j = rand() % 4747;
-					if (j == HUGE_VAL)
 					if (debug)printf("j:%d ", j);
 				} while (compJ(j, jImp));
 				jImp[i % 3] = j;
 				if (debug)printf("j made\n");
-				srand((int)(ldexp(1 + j, k)) % 4747);
+				srand((int)(ldexp(1 + j, k)) % 4747); //arbitrary to be distinct but repeatable when using seeds
 				if(debug)printf("srand = %d \n", (int)(ldexp(1 + j, k)) % 4747);
 				seed[i] = (rand() + j) % 128;
 				if (debug || liteDebug)printf("%d.%d|", i, (rand() + i) % 128);
 			}
 		}
+		//if input isn't 0 copy it to seed
 		else strcpy_s(seed, input);
+		//having two repeating first characters can cause problems because of my arbitrary way of getting a seed
 		if (seed[0] == seed[1])seed[1]++;
 		if (seed[0] == seed[2])seed[2]++;
 	} while (strlen(seed) < 3);
+	
 	int a = 19, b = 49; //so I would only have to switch two values after changing the size of map[][];
 	//map[y][x]
 	//y = columns, x = rows
@@ -180,31 +194,39 @@ int main()
 	{
 		for (int j = 0; j < b; j++)
 		{
+			//initialise all "tiles" as "walls"
 			map[i][j] = 1;
 		}
 	}
-	int y = (a - 1) / 2; int x = (b - 1) / 2;
-	map[y][x] = 0; int c = 0;
-	int tempPos[2];
+	int y = (a - 1) / 2; 
+	int x = (b - 1) / 2;
+	map[y][x] = 0; //initialise the middle as floor
+	int c = 0; //how many times has the while loop repeated
+	int tempPos[2]; //an array to temporarily store the x and y
+	
+	//while less than 200 floors
 	while (valFinder(map, 0) < 200)
 	{
-		int r = 0;
-		int loop = 0;
+		int r = 0; //randomised int used to determine which direction to move in
+		int loop = 0; // how many times has the do while loop looped continously
 		do {
 			tempPos[0] = y;
 			tempPos[1] = x;
+			//technically no longer needed since do while no longer loops if destination is floor
 			if (noDestination(map, y, x))
 			{
 				srand(seed[(int)floor(((float)(y + x) * 37) / (loop + 1)) % strlen(seed)]);
 				if (debug) { printf("No Dest %d, %d (%d)\n", x, y, valFinder(map, 0)); }
 				y = (rand() % 18) + 1;
+				
 				if ((int)floor((float)((x - y) * 3 / 11)) < 0)srand(seed[(int)(-1 * floor(((float)(x - y) * 37) / (loop + 1))) % strlen(seed)]);
 				else srand(seed[(int)floor(((float)(x - y) * 37) / (loop + 1)) % strlen(seed)]);
 				x = (rand() % 48) + 1;
 			}
-			int r = seedRand(c, loop, seed) % 4;
-			scrambler(randomImp, 4, c, loop, seed);
-
+			int r = seedRand(c, loop, seed) % 4; //generates random input
+			scrambler(randomImp, 4, c, loop, seed); //scrambles inputs
+			
+			//print randomImp every iteration of the do while when debug is on
 			if (debug)
 			{
 				for (int m = 0; m < 4; m++)
@@ -213,6 +235,8 @@ int main()
 				}
 				printf("\n");
 			}
+			
+			//pleasingly random
 			if (r == randomImp[0])
 			{
 				x++;
@@ -233,6 +257,8 @@ int main()
 				y--;
 				if (debug) { printf("(y)%d--;", y); }
 			}
+			
+			//if x is on or past the edge make it mot be on or past the edge
 			if (x >= 48 || x <= 0)
 			{
 				x += 3;
@@ -246,6 +272,7 @@ int main()
 				}
 				if (debug) { printf("x = %d", x); }
 			}
+			//same as above but for y
 			if (y >= 18 || y <= 0)
 			{
 				y += 3;
@@ -254,6 +281,8 @@ int main()
 			}
 			if (debug)printf(" (%d, %d)\n", x, y);
 			loop++;
+			
+			//send x and y back a step if step is invalid so that it can pick another random direction
 			if (touchingBorder(x, y))
 			{
 				y = tempPos[0];
@@ -261,19 +290,22 @@ int main()
 			}
 			if (liteDebug && !debug)printf("loop: %d\n", loop);
 		} while (touchingBorder(x, y));
+		//if new tile is not floor set to floor
 		if (map[y][x] != 0 && !touchingBorder(x, y))
 		{
 			if (debug)printf("New Floor!\n");
 			map[y][x] = 2;
 		}
+		//these stop the same commands from looping and stop the seed from failing
 		c++;
 		if ((c + 1) > strlen(seed))c = 0;
-
 		seed[r] += r;
 		for (int k = 0; k < strlen(seed); k++)
 		{
 			seed[k] % 128;
 		}
+		
+		//debug msgs
 		if (liteDebug && !debug)
 		{
 			system("cls");
@@ -291,18 +323,11 @@ int main()
 			printf("%d\n", (valFinder(map, 0)));
 		}
 		
+		//set '!' to '.' after the single iteration as '!' should only the current place of the x, y
 		if (map[y][x] == 2)map[y][x] = 0;
 	}
-	/*/
-	int mapC[19][49];
-	for (int i = 1; i < a - 1; i++)
-	{
-		for (int j = 1; j < b - 1; j++)
-		{
-			if (map[i][j] == 1)mapC[i][j] = 2;
-			if (map[i][j] == 0)mapC[i][j] = 0;
-		}
-	}//*/
+	
+	//Cellular Autotmata, if a tile has 5 neighbouring walls it turns into a wall, if it has 5 neighbouring floors it turns into a floor
 	int rep = 0;
 	while (rep < 2)
 	{
@@ -317,29 +342,23 @@ int main()
 			}
 		}
 		rep++;
-	}//*/
+	}
 	
 	printf("\n\n");
-	/*/3x8 5x5 squares
-	for (int i = 0; i < a; i++)
-	{
-		for (int j = 0; j < b; j++)
-		{
-			if (i % 6 == 0)
-			{
-				map[i][j] = 1;
-			}
-			if (j % 6 == 0)
-			{
-				map[i][j] = 1;
-			}
-		}
-	}//*/
+	//render
 	render(map, a, b);
-	/*/
-	int repeat = 1;
-	printf("Enter 0 to repeat\n");
-	scanf_s("%d", &repeat);
-	if (repeat == 0)main();//*/
 	return 0;
 }
+
+/*                                    
+                       88              
+                       ""              
+                                       
+8b,dPPYba,  ,adPPYYba, 88 8b,dPPYba,   
+88P'    "8a ""     `Y8 88 88P'   `"8a  
+88       d8 ,adPPPPP88 88 88       88  
+88b,   ,a8" 88,    ,88 88 88       88  
+88`YbbdP"'  `"8bbdP"Y8 88 88       88  
+88                                     
+88                                    
+*/
