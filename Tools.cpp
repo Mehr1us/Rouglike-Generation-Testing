@@ -3,7 +3,7 @@
 #include <time.h>
 #include <math.h>
 
-//scrambler my 4 int array based on the "seed"
+//scrambles my 4 int array based on the "seed"
 void Tools::scrambler(int arr[], int l, int c, int loop, char seed[40])
 {
 	srand((int)seed[c] * (int)seed[c + 1] * 3737 * (loop + 1));
@@ -111,6 +111,7 @@ bool Tools::noDestination(int map[][49], int i, int j)
 	return false;
 }
 
+//compares two 1d int arrays (unused so far)
 bool Tools::arrcmp(int a[], int b[])
 {
 	size_t n = sizeof(a) / sizeof(a[0]);
