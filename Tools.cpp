@@ -3,6 +3,7 @@
 #include <time.h>
 #include <math.h>
 
+//scrambler my 4 int array based on the "seed"
 void Tools::scrambler(int arr[], int l, int c, int loop, char seed[40])
 {
 	srand((int)seed[c] * (int)seed[c + 1] * 3737 * (loop + 1));
@@ -43,6 +44,7 @@ void Tools::scrambler(int arr[], int l, int c, int loop, char seed[40])
 	}
 }
 
+//Checks how many of int value are in the map
 int Tools::valFinder(int map[19][49], int value)
 {
 	int a = 19; int b = 49; int x = 0;
@@ -56,6 +58,7 @@ int Tools::valFinder(int map[19][49], int value)
 	return x;
 }
 
+//checks if the current x and y coords are on the border 
 bool Tools::touchingBorder(int x, int y)
 {
 	if (x == 0 || x == 48)return true;
@@ -63,9 +66,12 @@ bool Tools::touchingBorder(int x, int y)
 	return false;
 }
 
+//draws the map
 void Tools::render(int map[][49], int a, int b)
 {
-	char symbmap[] = { '.', '#', '!' };
+	//'.' represent floors, '#' represent walls and '!' represents the current x, y pos only seen if debug or showGen = true;
+	char symbmap[] = { ' ', '#', '!' ,205,186, 'x', '.',201,187,200,188};
+
 	for (int i = 0; i < a; i++)
 	{
 		for (int j = 0; j < b; j++)
@@ -76,6 +82,7 @@ void Tools::render(int map[][49], int a, int b)
 	}
 }
 
+//count num of neighbours that are equal to int tileno
 int Tools::nebCount(int map[][49], int i, int j, int tileno)
 {
 	int neb = 0;
@@ -92,6 +99,7 @@ int Tools::nebCount(int map[][49], int i, int j, int tileno)
 	return neb;
 }
 
+//checks if the 4 neighbours are all floors // technically no longer needed
 bool Tools::noDestination(int map[][49], int i, int j)
 {
 	int neb = 0;
@@ -100,5 +108,22 @@ bool Tools::noDestination(int map[][49], int i, int j)
 	if (map[i][j + 1] == 0 || j + 1 == 18)neb++;
 	if (map[i][j - 1] == 0 || j - 1 == 0)neb++;
 	if (neb == 4)return true;
+	return false;
+}
+
+bool Tools::arrcmp(int a[], int b[])
+{
+	size_t n = sizeof(a) / sizeof(a[0]);
+	size_t m = sizeof(b) / sizeof(b[0]);
+	int l = 0;
+	if (n != m)return false;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			if (a[i] == b[j])l++;
+		}
+	}
+	if (l == n)return true;
 	return false;
 }

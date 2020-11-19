@@ -7,4 +7,5 @@ public:
 	void scrambler(int arr[], int l, int c, int loop, char seed[40]);
 	int nebCount(int map[][49], int i, int j, int tileno);
 	bool noDestination(int map[][49], int i, int j);
+	bool arrcmp(int a[], int b[]);
 };

@@ -5,6 +5,7 @@
 #include <cfenv>
 #include "main.h"
 
+//generates a random value based on the seed, iteration and the number of unsuccessful loops inbetween iterations
 int DWCA::seedRand(int c, int loop, char seed[40])
 {
 	srand((int)seed[c] * (int)seed[c + 1] * 37 * (loop + 1));
@@ -13,6 +14,7 @@ int DWCA::seedRand(int c, int loop, char seed[40])
 	return x;
 }
 
+//checks if the new j value is part of jImp (has repeated a value)
 bool DWCA::compJ(int j, int jImp[3])
 {
 	for (int i = 0; i < 3; i++)
@@ -23,15 +25,18 @@ bool DWCA::compJ(int j, int jImp[3])
 	return false;
 }
 
-DWCA::DWCA() {
+void DWCA::dwalkca() {
+	system("cls");
 	Tools tools;
 	int map[19][49];
 	char seed[40];
 	char input[40];
+	char buffer[100];
 	int randomImp[4] = { 0, 1, 2, 3 };
 
 	do {
 		printf("Enter a seed of at least 3 characters (0 for random seed): ");
+		gets_s(buffer, sizeof(buffer));
 		gets_s(input, sizeof(input));
 
 		//if input is 0, generate a 40 value long seed

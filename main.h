@@ -7,4 +7,4 @@ static const bool showGen = false;
 #include <stdio.h>
 #include "DWCA.h"
 #include "Tools.h"
-
+#include "Grid.h"

@@ -1,5 +1,7 @@
 #include "main.h"
-
+#include <stdlib.h>
+Grid grid;
+DWCA dwca;
 /*
 /	
 /	To use it is suggested to change output window font to a monospaced one
@@ -14,5 +16,12 @@
 
 int main() 
 {
-	DWCA::DWCA();
+	int choice;
+	do { 
+		printf("Pick Generation Method\n0 = Grid Generation\n1 = DWalk + CAutomata\n");
+		scanf_s("%d", &choice);
+	} while (choice != 0 && choice != 1);
+
+	if (choice == 0)grid.gridGen();
+	else if (choice == 1)dwca.dwalkca();
 }
