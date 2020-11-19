@@ -33,10 +33,11 @@ void DWCA::dwalkca() {
 	char input[40];
 	char buffer[100];
 	int randomImp[4] = { 0, 1, 2, 3 };
-
+	bool buf = true;
 	do {
 		printf("Enter a seed of at least 3 characters (0 for random seed): ");
-		gets_s(buffer, sizeof(buffer));
+		if (buf)gets_s(buffer, sizeof(buffer));
+		buf = false;
 		gets_s(input, sizeof(input));
 
 		//if input is 0, generate a 40 value long seed
@@ -227,6 +228,7 @@ void DWCA::dwalkca() {
 	printf("\n\n");
 	//render
 	tools.render(map, a, b);
+	system("pause");
 }
 
 /*
