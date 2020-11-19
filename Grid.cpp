@@ -50,10 +50,12 @@ void Grid::gridGen()
 			rooms[i][j] = -1;
 		}
 	}
+	bool buf = true;
 	//copied from DWCA
 	do {
 		printf("Enter a seed of at least 3 characters (0 for random seed): ");
-		gets_s(buffer, sizeof(buffer));
+		if (buf)gets_s(buffer, sizeof(buffer));
+		buf = false;
 		gets_s(input, sizeof(input));
 
 		//if input is 0, generate a 40 value long seed
@@ -281,6 +283,7 @@ void Grid::gridGen()
 	printf("\n\n");
 	//renders/prints the map using the render() function from Tools.cpp declared in Tools.h
 	tools.render(map, a, b);
+	system("pause");
 }
 
 
