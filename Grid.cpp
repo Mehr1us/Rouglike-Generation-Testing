@@ -3,6 +3,7 @@
 #include <string.h>
 #include <random>
 
+//counts how many val exist in grid[][]
 int Grid::gridCount(int grid[3][8], int val)
 {
 	int x = 0;
@@ -33,6 +34,8 @@ void Grid::gridGen()
 	char seed[40];
 	char input[40];
 	char buffer[100];
+	
+	//initialise int arrays with values that we won't be using
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -82,6 +85,7 @@ void Grid::gridGen()
 	} while (strlen(seed) < 3);//*/
 
 	//3x8 5x5 squares
+	//sets values to some parts of map[][] later to be put through a string as the place of the character
 	for (int i = 0; i < a; i++)
 	{
 		for (int j = 0; j < b; j++)
@@ -112,6 +116,8 @@ void Grid::gridGen()
 	map[0][48] = 8;
 	map[18][0] = 9;
 	map[18][48] = 10;
+	
+	//based on the seed "randomly" assigns a "random" amount of grid tiles to be occupied with rooms
 	int c = 0, d = 0;
 	if(debug)printf("%d\n", (unsigned int)seed);
 	srand((int)seed[c] * (int)seed[c + 1] * 37 * (d + 1));
@@ -136,6 +142,7 @@ void Grid::gridGen()
 		}
 		d++;
 	} while (gridCount(grid, 1) != n);
+	//print out grid for debug
 	if (debug) {
 		printf("Grid is Occupied\n");
 		for (int i = 0; i < 3; i++)
@@ -147,6 +154,8 @@ void Grid::gridGen()
 			printf("\n");
 		}
 	}
+	
+	//based on the seed "randomly" creates the square rooms inside the respective grid tiles
 	int c1 = 0, d1 = 0; int n0 = 0;
 	for (int x = 0; x < 8; x++)
 	{
@@ -207,6 +216,7 @@ void Grid::gridGen()
 		d1++;
 	}
 
+	//prints the rooms[][] grid for debug
 	if (debug) {
 		printf("Grid is Populated\n");
 		for (int i = 0; i < 15; i++)
@@ -218,7 +228,8 @@ void Grid::gridGen()
 			printf("\n");
 		}
 	}
-
+	
+	//based on the generated values in grid[][] and rooms[][] changes the values of map[][] to the respective values
 	int n1 = 0;
 	for (int x = 0; x < 8; x++)
 	{
@@ -257,6 +268,8 @@ void Grid::gridGen()
 					map[((1 + rooms[n1][z + 1]) + (6 * y))][((1 + rooms[n1][z]) + (6 * x))] = 5;
 				}
 				n1++;
+				
+				//if showGen is true print the map every step (not tested)
 				if (!debug && showGen)
 				{
 					system("cls");
@@ -266,6 +279,7 @@ void Grid::gridGen()
 		}
 	}
 	printf("\n\n");
+	//renders/prints the map using the render() function from Tools.cpp declared in Tools.h
 	tools.render(map, a, b);
 }
 
