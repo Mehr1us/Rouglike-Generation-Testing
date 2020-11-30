@@ -15,3 +15,8 @@ http://roguebasin.com/index.php?title=Grid_Based_Dungeon_Generator
 Possible Future Addition: Hallways and doors to connect up the rooms  
 Useful for basic Dungeons  
 ["Grid based dungeon generation.png"](https://github.com/Mehr1us/Rouglike-Generation-Testing/blob/main/Grid%20based%20dungeon%20generation.png) is 6 example outputs for my Grid based program.  
+
+## [Random Box Splitting](https://github.com/Mehr1us/Rouglike-Generation-Testing/blob/main/BoxSplit.cpp)  
+I *wanted* to make the grid-based generation more random by having randomly shaped 'grid' portions instead of static squares  
+after hours of headache caused probably by my own bad coding I gave up instead of rewriting it.  
+If you want to explore my trash go on, but i'm not planning on adding comments.
