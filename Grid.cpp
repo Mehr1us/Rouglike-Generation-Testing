@@ -1,7 +1,4 @@
 #include "main.h"
-#include <time.h>
-#include <string.h>
-#include <random>
 
 //counts how many val exist in grid[][]
 int Grid::gridCount(int grid[3][8], int val)
