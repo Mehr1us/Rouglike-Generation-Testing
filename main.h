@@ -7,6 +7,13 @@ static const bool showGen = false;
 //stops me from needing to include all of these in every .cpp file
 //don't add to other header files
 #include <stdio.h>
+#include <time.h>
+#include <string.h>
+#include <random>
+#include <math.h>
+#include <cfenv>
 #include "DWCA.h"
 #include "Tools.h"
 #include "Grid.h"
+#include "BoxSplit.h"
+
