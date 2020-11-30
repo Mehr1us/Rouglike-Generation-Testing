@@ -1,8 +1,3 @@
-#include <string.h>
-#include <random>
-#include <time.h>
-#include <math.h>
-#include <cfenv>
 #include "main.h"
 
 //generates a random value based on the seed, iteration and the number of unsuccessful loops inbetween iterations
