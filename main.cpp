@@ -2,6 +2,7 @@
 #include <stdlib.h>
 Grid grid;
 DWCA dwca;
+BoxSplit bsplit;
 /*
 /	
 /	To use it is in Visual Studio I suggest to change output window font to a monospaced one
@@ -16,13 +17,21 @@ DWCA dwca;
 
 int main() 
 {
-	//asks which algorithm to use
 	int choice;
 	do { 
 		printf("Pick Generation Method\n0 = Grid Generation\n1 = DWalk + CAutomata\n");
 		scanf_s("%d", &choice);
-	} while (choice != 0 && choice != 1);
-	
-	if (choice == 0)grid.gridGen();
-	else if (choice == 1)dwca.dwalkca();
+	} while (choice < 0 || choice > 3);
+
+	switch(choice) {
+	case 0: 
+		grid.gridGen();
+		break;
+	case 1:
+		dwca.dwalkca();
+		break;
+	case 2:
+		bsplit.Bsplit();
+		break;
+	}
 }
