@@ -1,37 +1,17 @@
 #include "main.h"
-#include <stdlib.h>
-Grid grid;
-DWCA dwca;
-BoxSplit bsplit;
-/*
-/	
-/	To use it is in Visual Studio I suggest to change output window font to a monospaced one
-/	Tools -> Options -> Environment -> Fonts & Colors -,
-/	Show Settings: Output Window -,                  <-'
-/	Font: "Your Monospaced Font"<-'
-/	"Your Monospaced Font" a mono font that you have downloaded
-/	I would suggest Roboto Mono
-/	
-/	
-*/
 
-int main() 
+CAutomata cAuto;
+PathTest pathT;
+
+void main()
 {
-	int choice;
-	do { 
-		printf("Pick Generation Method\n0 = Grid Generation\n1 = DWalk + CAutomata\n");
-		scanf_s("%d", &choice);
-	} while (choice < 0 || choice > 3);
 
-	switch(choice) {
-	case 0: 
-		grid.gridGen();
-		break;
-	case 1:
-		dwca.dwalkca();
-		break;
-	case 2:
-		bsplit.Bsplit();
-		break;
+	int input;
+	printf("Path Generation(0) or Cellular Automata(1)?\n");
+	scanf_s("%d", &input);
+	switch (input) {
+	case 0:pathT.generate(); break;
+	case 1:cAuto.generate(); break;
+	default:printf("Not a valid option\n");
 	}
 }
