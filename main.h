@@ -1,5 +1,5 @@
-static const bool debug = false;
-static const bool showGen = false;
+static const bool debug = false; //Global Bool to toggle debug msgs
+static const bool showGen = false; //Global Bool to toggle drawing the map every iteration (Not implemented for PathTest)
 
 #include <stdio.h>
 #include <stdbool.h>
