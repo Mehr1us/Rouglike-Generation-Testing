@@ -1,11 +1,15 @@
 #include "main.h"
 
+//bool is global bot not static, only purpose is to be changed in generate(); and be used in makePath without giving pathgen every time I call makePath(); 
 bool pathgen = 1;
 
+//Describes that if you create a "Point" you have to give 4 seperate ints
 Point::Point(int x, int y, int id, int roomSize) : x(x), y(y), id(id), roomSize(roomSize) {}
 
+//redundant
 Path::Path() {}
 
+//Asks for and/or generates a seed
 void PathTest::getSeed(char seed[40])
 {
 	int len = (int)strlen(seed);
@@ -43,9 +47,10 @@ void PathTest::getSeed(char seed[40])
 	}
 }
 
+//map is global so I could be lazy and not call it every single time I use a function that modifies it
 unsigned char map[40][150]; //6000 tiles
 
-
+//Draws the map
 void PathTest::render()
 {
 	char chMap[] = { '.', 219, 'O','*' };
@@ -59,6 +64,7 @@ void PathTest::render()
 	}
 }
 
+//makes a path between (x1, y1) and (x2, y2)
 void PathTest::makePath(int seed, int x1, int y1, int x2, int y2)
 {
 	int xa, ya, xb, yb, xr, yr, j = 0; double xlen, ylen, xlenr, ylenr;
@@ -68,15 +74,18 @@ void PathTest::makePath(int seed, int x1, int y1, int x2, int y2)
 	xr = xa; yr = ya;
 	if (!pathgen)
 	{
+		//distance from point a to b on the respective axis
 		int xlen = xa - xb;
 		int ylen = ya - yb;
 		bool flip = false;
 		if (ylen < 0)flip = true;
+		//draws a straight line from xb to xa while keeping the y value the same
 		for (int i = xb; i <= xa; i++)
 		{
 			map[yb][i] = 3;
 			j = i;
 		}
+		//can be simplified by using i = (!flip) ? i + 1 : i - 1 instead of i++ and i--
 		switch (flip) {
 		case 0:
 			for (int i = yb; i <= ya; i++)
@@ -100,6 +109,9 @@ void PathTest::makePath(int seed, int x1, int y1, int x2, int y2)
 		ylenr = abs((double)ya - (double)yb) + 1;
 		srand(seed);
 		do {
+			//distance from current x/y to xa/ya divided by the original/'real' distance between xa/ya and xb/yb
+			//whichever is larger decides which direction to draw in
+			//if both same pick a rand() direction
 			xlen = (abs((double)xa - (double)xb) + 1) / xlenr;
 			ylen = (abs((double)ya - (double)yb) + 1) / ylenr;
 			if (xlen == ylen)
@@ -130,6 +142,7 @@ void PathTest::makePath(int seed, int x1, int y1, int x2, int y2)
 	return;
 }
 
+//function to make empty space around a point based on it's roomSize value
 void PathTest::makeRoom(int x, int y, int roomSize)
 {
 	for (int y1 = y - roomSize; y1 <= y + roomSize; y1++)
@@ -143,6 +156,7 @@ void PathTest::makeRoom(int x, int y, int roomSize)
 	return;
 }
 
+//main function of PathTest.cpp
 void PathTest::generate()
 {
 	system("cls");
@@ -155,14 +169,15 @@ void PathTest::generate()
 	for (int i = 0; i < 20; i++)input[i] = 0;
 	do 
 	{
-		//
+		//Ask for which Path gen to use
 		printf("Linear or non-linear paths?\n");
 		scanf_s("%s", input, sizeof(input));
 		if (!strcmp(input, "linear") || !strcmp(input, "l") || !strcmp(input, "0")) { pathgen = 0; break; }
 		else if (!strcmp(input, "non-linear") || !strcmp(input, "nl") || !strcmp(input, "1")) { pathgen = 1; break; }
 		else printf("Only accepted input (in lowercase) is 'linear' ('l', '0') or 'non-linear' ('nl', '1')\n");
 	} while (true);
-
+	
+	//initialise all of map as walls
 	for (int y = 0; y < 40; y++) //40 rows
 	{
 		for (int x = 0; x < 150; x++) //150 columns
@@ -179,11 +194,13 @@ void PathTest::generate()
 	}
 	if (debug)printf("<%d>[%s]\n", seedi, seed);
 	srand(seedi);
+	
 	bool rep = false;
 	for (int id = 0; id < 10; id++)
 	{
 		int x = 0, y = 0, roomSize = 0;
 		do {
+			//generate a random and unique point with a random roomSize value
 			x = rand() % 146 + 2;
 			y = rand() % 36 + 2;
 			rep = false;
@@ -204,9 +221,11 @@ void PathTest::generate()
 				if (y == path.points[i]->y)rep = true;
 			}
 		} while (rep);
+		//create a new Point and add it to the list
 		path.points.push_back(new Point(x, y, id, roomSize));
 		if (true);
 	}
+	//makes a path with the values of points[i] and the next point (points[i+1]/points[0])
 	for (int i = 0; i < path.points.size(); i++)
 	{
 		int j = i + 1;
